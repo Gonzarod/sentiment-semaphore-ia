@@ -1,0 +1,78 @@
+<section>
+    <div class="head">
+        <img class="logo" src="assets/sentiment-semaphore.png" alt="">
+    </div>
+    <div class="body">
+        <div class="content">
+            <div class="text">
+                <p> A través de esta aplicación se analizará los sentimientos de las personas dentro de la red social Twitter. El proceso 
+                    inicia al completar los campos de Cuenta Twitter, fecha (referencia) y el número de tweets, luego se recepciona los 
+                    tweets que las personas realizaron según @ con la cuenta, conseguidos mediante la API, después mediante el algoritmo 
+                    de procesamiento de lenguaje natural segregara y etiquetara los datos que se tiene. Finalmente, calculando la efectividad 
+                    se mostrará el resultado mediante [Neutro, Positivo o Negativo].
+                </p>
+            </div>
+            <div class="result neutro" *ngIf="active && results=='Neutro'">
+                <h2>Resultado {{results}}</h2>
+            </div>
+            <div class="result positivo" *ngIf="active && results=='Positivo'">
+                <h2>Resultado {{results}}</h2>
+            </div>
+            <div class="result negativo" *ngIf="active && results=='Negativo'">
+                <h2>Resultado {{results}}</h2>
+            </div>
+            <div class="form">
+                <div class="inputs" [formGroup]="requestForm">
+                    <mat-form-field class="size">
+                        <mat-label>Cuenta Twitter</mat-label>
+                        <input matInput placeholder="Ex. MarvelLATAM" formControlName="account_tweets">
+                    </mat-form-field>
+
+                    <mat-form-field class="size">
+                        <mat-label>Ingrese una fecha</mat-label>
+                        <input matInput [matDatepicker]="date" formControlName="date_tweets">
+                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                        <mat-datepicker #date></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field class="size">
+                        <mat-label>N° de Tweets</mat-label>
+                        <input matInput type="number" placeholder="Ex. 10" formControlName="number_tweets">
+                    </mat-form-field>
+                </div>
+                <div class="buttons">
+                    <button mat-raised-button class="style" (click)="sendRequest()">Realizar Analisis de Sentimiento</button>
+                </div>
+            </div>
+            <div class="table" *ngIf="active">
+                <table mat-table [dataSource]="dataTweets" class="style">
+                    <!-- Text Tweet Column -->
+                    <ng-container matColumnDef="text">
+                        <th mat-header-cell class="first" *matHeaderCellDef> Texto del Tweet </th>
+                        <td mat-cell class="first" *matCellDef="let tweet"> {{tweet.text}} </td>
+                    </ng-container>
+                
+                     <!-- Eficiencia Column -->
+                    <ng-container matColumnDef="accuracy">
+                        <th mat-header-cell class="second" *matHeaderCellDef> Eficiencia </th>
+                        <td mat-cell class="second" *matCellDef="let tweet"> {{convertString(tweet.accurancy)}} </td>
+                    </ng-container>
+          
+                    <!-- Result Column -->
+                    <ng-container matColumnDef="result">
+                        <th mat-header-cell class="second" *matHeaderCellDef> Resultado </th>
+                        <td mat-cell class="second" *matCellDef="let tweet"> {{tweet.result}} </td>
+                    </ng-container>
+                
+                    <tr mat-header-row *matHeaderRowDef="displayItems"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayItems;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[10]"
+                    showFirstLastButtons 
+                    aria-label="Select page of periodic elements">
+                </mat-paginator>
+            </div>
+            <div class="empty"></div>
+        </div>
+    </div>
+</section>
